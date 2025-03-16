@@ -5,6 +5,11 @@ export default function TodoList() {
   const [todos, setTodos] = useState([]);
   const [isPending, setIsPending] = useState(true);
 
+  const statusChangeHandler = (todoId) => {
+    console.log('status changed',todoId);
+    setTodos(oldTodos => oldTodos.map(todo => todo._id === todoId ? { ...todo, isCompleted: !todo.isCompleted } : todo))
+  };
+
   useEffect(() => {
     const url = "http://localhost:3030/jsonstore/todos";
     fetch(url)
@@ -51,8 +56,10 @@ export default function TodoList() {
               {todos.map(todo => 
                     <TodoListItem 
                         key={todo._id} 
+                        _id={todo._id} 
                         text={todo.text} 
                         isCompleted={todo.isCompleted} 
+                        onStatusChange={statusChangeHandler}
                     />
               )}
             </tbody>
