@@ -1,17 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import TodoListItem from "./TodoListItem";
 
 export default function TodoList() {
+  const [todos, setTodos] = useState([]);
+
   useEffect(() => {
     const url = "http://localhost:3030/jsonstore/todos";
     fetch(url)
-        .then( response => response.json())
-        .then( data => {
-            console.log(data);
-        })
-        .catch(err => {
-            console.log(err.message);
-        });
+      .then(res => res.json())
+      .then(data => {
+        const result = Object.values(data);
+        setTodos(result);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   }, []);
 
   return (
@@ -41,10 +44,13 @@ export default function TodoList() {
             </thead>
             <tbody>
               {/* <!-- Todo item --> */}
-              <TodoListItem />
-              <TodoListItem />
-              <TodoListItem />
-              <TodoListItem />
+              {todos.map(todo => 
+                    <TodoListItem 
+                        key={todo._id} 
+                        text={todo.text} 
+                        isCompleted={todo.isCompleted} 
+                    />
+              )}
             </tbody>
           </table>
         </div>
